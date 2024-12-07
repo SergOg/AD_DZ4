@@ -12,46 +12,54 @@ import ru.gb.dz4.databinding.ActivityMainBinding
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     @SuppressLint("WrongViewCast", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.photo.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        binding.textName.counterMaxLength = 40
-        binding.progress.progress = Random.nextInt(101)
-        binding.scoresDigit.text = binding.progress.progress.toString() + "/100"
-        binding.textButton.isEnabled = false
 
+        setup()
         val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
         radioGroup.setOnCheckedChangeListener { _, buttonId ->
-            checkAll(binding)
+            checkAll()
         }
         binding.switchMaterial.setOnCheckedChangeListener() { _, _ ->
-            checkState(binding)
-            checkAll(binding)
+            checkState()
+            checkAll()
         }
         binding.textButton.setOnClickListener {
             showSnackbar("Изменения сохранены")
         }
         binding.editText1.doOnTextChanged { text, start, before, count ->
-            checkAll(binding)
+            checkAll()
         }
         binding.editText2.doOnTextChanged { text, start, before, count ->
-            checkAll(binding)
+            checkAll()
         }
         binding.checkbox1.setOnClickListener {
-            checkAll(binding)
+            checkAll()
         }
         binding.checkbox2.setOnClickListener {
-            checkAll(binding)
+            checkAll()
         }
     }
 
-    private fun checkAll(binding: ActivityMainBinding) {
+    private fun setup() {
+        with(binding) {
+            photo.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            textName.counterMaxLength = 40
+            progress.progress = Random.nextInt(101)
+            scoresDigit.text = binding.progress.progress.toString() + "/100"
+            textButton.isEnabled = false
+        }
+    }
+
+    private fun checkAll() {
         var switchAdd: Boolean = false
         if (((binding.switchMaterial.isChecked) &&
-            ((binding.checkbox1.isChecked) || (binding.checkbox2.isChecked))) ||
+                    ((binding.checkbox1.isChecked) || (binding.checkbox2.isChecked))) ||
             (!binding.switchMaterial.isChecked)
         ) {
             switchAdd = true
@@ -69,17 +77,21 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun checkState(binding: ActivityMainBinding) {
+    private fun checkState() {
         if (binding.switchMaterial.isChecked) {
-            binding.switchMaterial.isChecked = true
-            binding.checkbox1.isEnabled = true
-            binding.checkbox2.isEnabled = true
+            with(binding) {
+                switchMaterial.isChecked = true
+                checkbox1.isEnabled = true
+                checkbox2.isEnabled = true
+            }
         } else {
-            binding.switchMaterial.isChecked = false
-            binding.checkbox1.isEnabled = false
-            binding.checkbox2.isEnabled = false
-            binding.checkbox1.checkedState = STATE_UNCHECKED
-            binding.checkbox2.checkedState = STATE_UNCHECKED
+            with(binding) {
+                switchMaterial.isChecked = false
+                checkbox1.isEnabled = false
+                checkbox2.isEnabled = false
+                checkbox1.checkedState = STATE_UNCHECKED
+                checkbox2.checkedState = STATE_UNCHECKED
+            }
         }
     }
 }
